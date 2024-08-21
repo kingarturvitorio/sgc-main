@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container mt-4">
+    <h3 class="display-7">Deletar terapeuta</h3>
+
+    <div class="card">
+        <div class="card-body">
+            <p class="card-text">Tem certeza de que deseja excluir o terapeuta <strong> {{ object.nome_terapeuta }}</strong></p>
+            <form method="post">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger mt-3">Deletar</button>
+            </form>
+
+            <a href="{% url 'terapeuta-list' %}" class="btn btn-secondary mt-3">Voltar para lista terapeutas.</a>
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container mt-4">
+    <h3 class="display-7">Detalhes Paciente</h3>
+
+    <div class="card">
+        <div class="card-body">
+            <h3 class="card-title">Nome: {{ object.nome }}</h3>
+            <p class="card-text">Documento: {{ object.documento }}</p>
+            <p class="card-text">Endereço: {{ object.endereco }}</p>
+            <p class="card-text">Contato: {{ object.telefone_contato }}</p>
+            <p class="card-text">Telefone Responsável: {{ object.telefone_responsavel }}</p>
+            <p class="card-text">Telefone Emergência: {{ object.telefone_emergencia }}</p>
+            <p class="card-text">Tipo de convênio: {{ object.tipo_convenio }}</p>
+            <p class="card-text">Data de nascimento: {{ object.data_nascimento}}</p>
+            <p class="card-text">Nome responsável: {{ object.nome_responsavel }}</p>
+            <p class="card-text">Documento responsável: {{ object.documento_responsavel }}</p>
+            <p class="card-text">Foto carteirinha: {{ object.foto_carteirinha }}</p>
+            <p class="card-text">Documentos: {{ object.documento }}</p>
+        </div>
+    </div>
+    <a href="{% url 'paciente-list' %}" class="btn btn-secondary mt-3">Voltar para lista pacientes</a>
+</div>
+
+{% endblock %}

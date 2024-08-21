@@ -1,0 +1,48 @@
+
+{% extends 'base.html' %}
+
+{% block title %}
+SGC - Pacientes
+{% endblock %}
+
+{% block content %}
+
+<div class="row mb-3">
+    <div class="col-md-6">
+        <form method="get" action="{% url 'paciente-list' %}">
+            <div class="input-group">
+                <input type="text" class="form-control" name="nome" placeholder="Nome" value="{{ request.GET.nome }}">
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-search"></i>
+                </button>
+            </div>
+        </form>
+    </div>
+
+</div>
+
+<div class="table-responsive">
+    <table class="table table-striped table-bordered">
+        <thead class="thead-light">
+            <th>Nome Paciente</th>
+            <th>Gerar Relatório</th>
+        </thead>
+
+        <tbody>
+            {% for paciente in pacientes %}
+            <tr>
+                <td>{{ paciente.nome }}</td>
+                <td>
+                    <a href="{% url 'rel-aso' paciente.id %}" class="btn btn-primary btn-sm">
+                        <i class="bi bi-eye"></i>
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+
+{% include 'components/_pagination.html' %}
+{% endblock %}

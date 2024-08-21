@@ -1,0 +1,412 @@
+{% extends 'base.html' %}
+
+{% load static %}
+{% block title %}Event Calendar{% endblock title %}
+
+{% block extracss %}
+<link href="{% static 'calender/main.css' %}" rel="stylesheet" />
+{% endblock extracss %}
+
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <div class="tile row">
+            <div class="col-md-12">
+                <div id="calendar" style="width:100%;"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="tile">
+            <div class="tile-body">
+                <div class="table-responsive">
+                    <div id="sampleTable_wrapper" class="dataTables_wrapper container-fluid dt-bootstrap4 no-footer">
+                        <div class="row">
+                            <div class="col-sm-12">
+                                <table class="table table-hover table-bordered dataTable no-footer" id="sampleTable"
+                                    role="grid" aria-describedby="sampleTable_info">
+                                    <thead>
+                                        <tr role="row">
+                                            <th class="sorting_asc" tabindex="0" aria-controls="sampleTable" rowspan="1"
+                                                colspan="1" aria-sort="ascending"
+                                                aria-label="Name: activate to sort column descending"
+                                                style="width: 261.641px;">Nome Paciente</th>
+                                            <th class="sorting" tabindex="0" aria-controls="sampleTable" rowspan="1"
+                                                colspan="1" aria-label="Position: activate to sort column ascending"
+                                                style="width: 270px;">Nome Terapeuta</th>
+                                            <th class="sorting" tabindex="0" aria-controls="sampleTable" rowspan="1"
+                                                colspan="1" aria-label="Position: activate to sort column ascending"
+                                                style="width: 100.312px;">N° Guia</th>
+                                            <th class="sorting" tabindex="0" aria-controls="sampleTable" rowspan="1"
+                                                colspan="1" aria-label="Office: activate to sort column ascending"
+                                                style="width: 189.281px;">Dia e hora início Consulta</th>
+
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for event in events %}
+                                        <tr>
+                                            <td>{{ event.paciente }}</td>
+                                            <td>{{ event.terapeuta }}</td>
+                                            <td>{{ event.guia }}</td>
+                                            <td>{{ event.start_time }}</td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- modal -->
+
+<div class="modal fade show" id="eventModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content" style="min-width:900px;">
+            <div class="modal-header bg-primary">
+                <h5 class="modal-title text-white" id="exampleModalLongTitle">Adicionar novo agendamento
+                </h5>
+                <button id="modalClose1" type="button" class="close" data-dismiss="modal"
+                    aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form method="post">
+                {% csrf_token %}
+                <div class="modal-body">
+                    <div class="col-12 row">
+                        <div class="form-group">
+                            <label for="recipient-name" class="col-form-label">Nome Paciente:</label>
+                            {{ form.paciente }}
+                        </div>
+                        <div class="form-group">
+                            <label for="message-text" class="col-form-label">Nome Terapeuta:</label>
+                            {{ form.terapeuta }}
+                        </div>
+                        <div class="form-group">
+                            <label for="message-text" class="col-form-label">Cidade:</label>
+                            {{ form.cidade }}
+                        </div>
+                        <div class="form-group">
+                            <label for="message-text" class="col-form-label">Tipo terapia:</label>
+                            {{ form.tipo_terapia }}
+                        </div>
+                        <div class="form-group">
+                            <label for="message-text" class="col-form-label">Número da guia:</label>
+                            {{ form.guia }}
+                        </div>
+                        <div class="form-group">
+                            <label for="message-text" class="col-form-label">Data Inicial Consulta:</label>
+                            {{ form.start_time }}
+                        </div>
+                        <div class="form-group">
+                            <label for="message-text" class="col-form-label">Observações:</label>
+                            {{ form.descricao }}
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button id="modalClose2" type="button" class="btn btn-danger">Close</button>
+                    <button type="submit" class="btn btn-primary">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<div class="modal fade show" id="detailModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-primary">
+                <h5 class="modal-title text-white" id="title_event_detail"></h5>
+                <button id="modalDetailClose" type="button" class="close" data-dismiss="modal"
+                    aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form method="">
+                {% csrf_token %}
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="message-text" class="col-form-label">Nome paciente</label>
+                        <p id="nome_paciente">
+                    </div>
+                    <div class="form-group">
+                        <label for="message-text" class="col-form-label">Nome terapeuta:</label>
+                        <p id="nome_terapeuta">
+                    </div>
+                    <div class="form-group">
+                        <label for="message-text" class="col-form-label">Guia</label>
+                        <p id="numero_guia">
+                    </div>
+                    <div class="form-group">
+                        <label for="message-text" class="col-form-label">Descrição:</label>
+                        <p id="description_event_detail">
+                    </div>
+                    <div class="form-group">
+                        <label for="message-text" class="col-form-label">Início da Consulta:</label>
+                        <p id="start_event_detail">
+                    </div>
+                    <div class="form-group">
+                        <label for="message-text" class="col-form-label">Final da Consulta:</label>
+                        <p id="end_event_detail">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button id="confirm-event-button" data-event-id="" type="button" class="btn btn-primary">Confirmar</button>
+                    <button id="delete-event-button" data-event-id="" type="button"  class="btn btn-danger">Deletar</button>
+                    <button id="add-to-next-week" data-event-id-week="" type="button" class="btn btn-success">Próxima Semana</button>
+                    <button id="add-to-next-day" data-event-id-day="" type="button" class="btn btn-primary">Próximo Dia</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock content %}
+
+
+{% block extrascripts %}
+
+<script type="text/javascript" src="{% static 'js/plugins/jquery.dataTables.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/plugins/dataTables.bootstrap.min.js' %}"></script>
+<script type="text/javascript">$('#sampleTable').DataTable();</script>
+
+
+<script src="{% static 'calender/main.js' %}"></script>
+<script>
+
+    FullCalendar.globalLocales.push(function () {
+        'use strict';
+
+        var ptBr = {
+            code: 'pt-br',
+            week: {
+                dow: 1, // Monday is the first day of the week.
+                doy: 4 // The week that contains Jan 4th is the first week of the year.
+            },
+            buttonText: {
+                prev: 'Anterior',
+                next: 'Próximo',
+                today: 'Hoje',
+                month: 'Mês',
+                week: 'Semana',
+                day: 'Dia',
+                list: 'Agenda'
+            },
+            weekText: 'Sm',
+            allDayText: 'Dia inteiro',
+            moreLinkText: function (n) {
+                return 'mais +' + n;
+            },
+            noEventsText: 'Não há eventos para mostrar'
+        };
+
+        return ptBr;
+
+    }());
+
+
+    function converterDataParaDjangoFormat(data) {
+        const dataJS = new Date(data);
+        const ano = dataJS.getFullYear();
+        const mes = (dataJS.getMonth() + 1).toString().padStart(2, '0');
+        const dia = dataJS.getDate().toString().padStart(2, '0');
+        const hora = dataJS.getHours().toString().padStart(2, '0');
+        const minuto = dataJS.getMinutes().toString().padStart(2, '0');
+        const segundo = dataJS.getSeconds().toString().padStart(2, '0');
+        const formatoDjango = `${ano}-${mes}-${dia} ${hora}:${minuto}:${segundo}`;
+        return formatoDjango;
+    }
+    $(document).ready(function(){
+        UpdateCalendar()
+        (()=>{setInterval(UpdateCalendar, 3000)})()
+    })
+
+    async function UpdateCalendar() {
+        var calendarEl = document.getElementById('calendar');
+        var today = new Date();
+        var calendar = new FullCalendar.Calendar(calendarEl, {
+            locale: 'pt-br', // Define o idioma para português
+            headerToolbar: {
+                left: 'prev,next today',
+                center: 'title',
+                right: 'dayGridMonth,timeGridWeek,timeGridDay,list'
+            },
+            initialDate: today,
+            navLinks: true, // can click day/week names to navigate views
+            selectable: true,
+            selectMirror: true,
+            select: function (arg) {
+                console.log('clickedeuu')
+                console.log(arg.start)
+                console.log(arg.end)
+                var modal = document.getElementById('eventModal')
+                modal.style.display = 'block'
+                document.getElementById('id_start_time').value = converterDataParaDjangoFormat(arg.start);
+                document.getElementById('id_end_time').value = converterDataParaDjangoFormat(arg.end);
+                calendar.unselect()
+                console.log('terminei')
+            },
+
+            // THIS KEY WON'T WORK IN PRODUCTION!!!
+            // To make your own Google API key, follow the directions here:
+            // http://fullcalendar.io/docs/google_calendar/
+            // googleCalendarApiKey: 'AIzaSyCqCxjjLtjbtkX37aOtWB8OfwBLy_6QuYk',
+
+            // bangladesh Holidays
+            // events: 'bn.bd#holiday@group.v.calendar.google.com',
+            eventClick: function (arg) {
+
+                console.log('clicked')
+                var paciente = arg.event.extendedProps.paciente;
+                var descricao = arg.event.extendedProps.descricao || '';
+                var terapeuta = arg.event.extendedProps.terapeuta;
+                var guia = arg.event.extendedProps.guia;
+                var start = formatDateTime(arg.event.start);
+                var end = formatDateTime(arg.event.end);
+                var id = arg.event.id;
+
+
+                var modalInputEnd = document.getElementById('end_event_detail');
+
+                var modal = document.getElementById('detailModal')
+                var modalTitle = document.getElementById('title_event_detail');
+                var modalStart = document.getElementById('start_event_detail');
+                var modalEnd = document.getElementById('end_event_detail');
+                var modalDescripition = document.getElementById('description_event_detail');
+                var modalPaciente = document.getElementById('nome_paciente');
+                var modalTerapeuta = document.getElementById('nome_terapeuta');
+                var modalGuia = document.getElementById('numero_guia');
+                var deleteButton = document.getElementById("delete-event-button");
+                var nextWeek = document.getElementById("add-to-next-week");
+                var nextDay = document.getElementById("add-to-next-day");
+
+                deleteButton.setAttribute("data-event-id", id);
+                nextWeek.setAttribute("data-event-id-week", id);
+                nextDay.setAttribute("data-event-id-day", id);
+                modal.style.display = 'block'
+
+                modalPaciente.textContent = paciente;
+                modalTerapeuta.textContent = terapeuta;
+                modalGuia.textContent = guia;
+                modalStart.textContent = start;
+                modalEnd.textContent = end;
+                modalDescripition.textContent = descricao;
+
+
+                modal.style.display = 'block';
+            },
+            editable: true,
+            dayMaxEvents: true, // allow "more" link when too many events
+            events: [
+                {% for event in events %}
+                {
+                    id: '{{ event.id }}',
+                    title: '{{ event.paciente }}',
+                    paciente: '{{ event.paciente }}',
+                    terapeuta: '{{ event.terapeuta }}',
+                    guia: '{{ event.guia }}',
+                    start: '{{ event.start_time }}',
+                    end: '{{ event.end_time }}',
+                    descricao: '{{ event.descricao }}',
+                },
+                {% endfor %}
+            ],
+    });
+    calendar.render();
+    }
+    const closeBtn1 = document.getElementById('modalClose1');
+    const closeBtn2 = document.getElementById('modalClose2');
+    const closeBtn3 = document.getElementById('modalDetailClose');
+    closeBtn1.addEventListener('click', () => {
+        const eventModal = document.getElementById('eventModal')
+        eventModal.style.display = 'none';
+    });
+    closeBtn2.addEventListener('click', () => {
+        const eventModal = document.getElementById('eventModal')
+        eventModal.style.display = 'none';
+    });
+    closeBtn3.addEventListener('click', () => {
+        const eventModal = document.getElementById('detailModal')
+        eventModal.style.display = 'none';
+    });
+    function formatDateTime(dateTime) {
+        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit', timeZoneName: 'short' };
+        const dataFormatada = new Date(dateTime).toLocaleDateString('pt-BR', options);
+        return dataFormatada;
+    };
+    document.getElementById('delete-event-button').addEventListener('click', function () {
+        const eventId = this.getAttribute('data-event-id');
+        console.log('Captured Event ID:', eventId); // Verifique se o ID é capturado corretamente
+        if (confirm('Tem certeza que deseja deletar esse agendamento?')) {
+            $.ajax({
+                url: `/delete_event/${eventId}/`,
+                type: 'POST',
+                data: {
+                    csrfmiddlewaretoken: '{{ csrf_token }}',
+                },
+                success: function (response) {
+                    alert(response.message);
+                    window.location.reload();
+                },
+                error: function (xhr, status, error) {
+                    alert('Error!');
+                }
+
+            });
+        }
+    });
+
+    document.getElementById('add-to-next-week').addEventListener('click', function () {
+        const eventId = this.getAttribute('data-event-id-week');
+        if (confirm('Mudar agendamento para a próxima semana?')) {
+            $.ajax({
+                url: `/next_week/${eventId}/`,
+                type: 'POST',
+                data: {
+                    csrfmiddlewaretoken: '{{ csrf_token }}',
+                },
+                success: function (response) {
+                    alert(response.message);
+                    window.location.reload();
+                },
+                error: function (xhr, status, error) {
+                    alert('Error!');
+                }
+            });
+        }
+    });
+
+    document.getElementById('add-to-next-day').addEventListener('click', function () {
+        const eventId = this.getAttribute('data-event-id-day');
+        if (confirm('Mudar agendamento para a próximo dia?')) {
+            $.ajax({
+                url: `/next_day/${eventId}/`,
+                type: 'POST',
+                data: {
+                    csrfmiddlewaretoken: '{{ csrf_token }}',
+                },
+                success: function (response) {
+                    alert(response.message);
+                    window.location.reload();
+                },
+                error: function (xhr, status, error) {
+                    alert('Error!');
+                }
+            });
+        }
+    });
+
+</script>
+{% endblock extrascripts %}

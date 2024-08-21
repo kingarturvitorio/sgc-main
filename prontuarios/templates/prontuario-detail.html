@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container mt-4">
+    <h3 class="display-7">Detalhes Prontuário</h3>
+
+    <div class="card">
+        <div class="card-body">
+            <h3 class="card-title">Nome: {{ object.event.paciente}}</h3>
+            <p class="card-text">Terapeuta: {{ object.event.terapeuta}}</p>
+            <p class="card-text">Data da consulta: {{ object.event.start_time }}</p>
+            <p class="card-text">Prontuário do paciente: {{ object.prontuario }}</p>
+        </div>
+    </div>
+    <a href="{% url 'prontuario-list' %}" class="btn btn-secondary mt-3">Voltar para lista prontuario</a>
+</div>
+
+{% endblock %}

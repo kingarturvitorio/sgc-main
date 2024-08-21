@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+{% load crispy_forms_tags %}
+
+<div class="container mt=4">
+    <h3 class="display-7">Cadastrar Terapeuta</h3>
+
+    <div class="card">
+        <div class="card-body">
+            <form method="post" class="form">
+                {% csrf_token %}
+                {{ form|crispy }}
+                <button type="submit" class="btn btn-primary">Salvar Terapeuta</button>
+            </form>
+        </div>
+    </div>
+    <a href="{% url 'terapeuta-list' %}" class="btn btn-secondary mt-3">Cancelar e voltar para Lista</a>
+</div>
+
+{% endblock %}
